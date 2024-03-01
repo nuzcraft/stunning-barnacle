@@ -1,0 +1,81 @@
+[gd_scene load_steps=13 format=3 uid="uid://erglwxl3erat"]
+
+[ext_resource type="Script" path="res://scenes/actor/actor.gd" id="1_7x5nb"]
+[ext_resource type="Texture2D" uid="uid://cberwt5g1yhv0" path="res://assets/sprites/tiles.png" id="1_bo2kj"]
+[ext_resource type="Texture2D" uid="uid://dvwuhqnsfxwp6" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.webp" id="3_xland"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_axegb"]
+atlas = ExtResource("1_bo2kj")
+region = Rect2(0, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xjl6i"]
+atlas = ExtResource("1_bo2kj")
+region = Rect2(16, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n7wpr"]
+atlas = ExtResource("1_bo2kj")
+region = Rect2(32, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vnub5"]
+atlas = ExtResource("1_bo2kj")
+region = Rect2(48, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_io1dv"]
+atlas = ExtResource("1_bo2kj")
+region = Rect2(64, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2hlhp"]
+atlas = ExtResource("1_bo2kj")
+region = Rect2(80, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nv6yl"]
+atlas = ExtResource("1_bo2kj")
+region = Rect2(96, 48, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rfhw4"]
+atlas = ExtResource("1_bo2kj")
+region = Rect2(112, 48, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_a0nn2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_axegb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xjl6i")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n7wpr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vnub5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_io1dv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2hlhp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nv6yl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rfhw4")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[node name="Actor" type="Node2D"]
+script = ExtResource("1_7x5nb")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_a0nn2")
+autoplay = "default"
+frame_progress = 0.516808
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+shadow_enabled = true
+texture = ExtResource("3_xland")
