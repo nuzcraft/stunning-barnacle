@@ -24,6 +24,10 @@ window/size/window_height_override=648
 window/stretch/mode="viewport"
 window/stretch/scale_mode="integer"
 
+[gui]
+
+theme/custom_font="res://assets/fonts/Not Jam UI Condensed 16/Not Jam UI Condensed 16.ttf"
+
 [input]
 
 up={

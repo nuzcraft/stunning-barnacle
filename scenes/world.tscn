@@ -265,9 +265,9 @@ texture = SubResource("GradientTexture2D_kmf5c")
 
 [node name="ZLabel" type="Label" parent="Overlay"]
 modulate = Color(0.976471, 0.14902, 0.447059, 1)
-offset_left = 120.0
+offset_left = 88.0
 offset_top = 296.0
-offset_right = 192.0
+offset_right = 243.0
 offset_bottom = 319.0
 text = "z:ACTION MODE"
 
