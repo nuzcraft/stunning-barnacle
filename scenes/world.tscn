@@ -264,7 +264,7 @@ layer_3/tile_data = PackedInt32Array(458766, 589824, 2)
 script = ExtResource("5_6mopx")
 
 [node name="Hero" parent="." instance=ExtResource("5_g5gmo")]
-position = Vector2(200, 104)
+position = Vector2(280, 200)
 
 [node name="Enemy" parent="." instance=ExtResource("7_hy4x3")]
 position = Vector2(328, 184)
