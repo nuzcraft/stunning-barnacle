@@ -1,0 +1,33 @@
+[remap]
+
+importer="font_data_dynamic"
+type="FontFile"
+uid="uid://b5x8sgltk0oqd"
+path="res://.godot/imported/Not Jam UI Condensed 19.ttf-9edb7001c59158f812970e7605f51937.fontdata"
+
+[deps]
+
+source_file="res://assets/fonts/Not Jam UI Condensed 16/Not Jam UI Condensed 19.ttf"
+dest_files=["res://.godot/imported/Not Jam UI Condensed 19.ttf-9edb7001c59158f812970e7605f51937.fontdata"]
+
+[params]
+
+Rendering=null
+antialiasing=1
+generate_mipmaps=false
+multichannel_signed_distance_field=false
+msdf_pixel_range=8
+msdf_size=48
+allow_system_fallback=true
+force_autohinter=false
+hinting=1
+subpixel_positioning=1
+oversampling=0.0
+Fallbacks=null
+fallbacks=[]
+Compress=null
+compress=true
+preload=[]
+language_support={}
+script_support={}
+opentype_features={}

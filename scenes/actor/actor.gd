@@ -18,3 +18,6 @@ func _process(delta: float) -> void:
 func move(vector: Vector2) -> void:
 	position += vector * tilesize
 	animated_sprite_2d.position -= vector * tilesize
+	
+func bump_anim(vector: Vector2) -> void:
+	animated_sprite_2d.position += (vector * tilesize) * 0.75
