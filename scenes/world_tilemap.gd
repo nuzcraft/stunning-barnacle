@@ -39,3 +39,13 @@ func try_attack_wall(coords: Vector2) -> bool:
 				set_cell(e_layers.FOREGROUND2, coords, e_source_id.TILES, Vector2(9, 2)) 
 			return true
 	return false
+	
+func is_coord_walkable(coords: Vector2) -> bool:
+	var bg_data = get_cell_tile_data(e_layers.BACKGROUND, coords)
+	if not bg_data:
+		return false
+	var fg_data = get_cell_tile_data(e_layers.FOREGROUND, coords)
+	if fg_data:
+		if fg_data.terrain == 0 and fg_data.terrain_set == 0:
+			return false
+	return true

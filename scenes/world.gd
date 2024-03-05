@@ -5,6 +5,7 @@ extends Node2D
 @onready var border_gradient: TextureRect = $Overlay/BorderGradient
 
 var tilesize = 16
+var astar_grid = AStarGrid2D.new()
 
 enum {
 	MOVING,
@@ -15,6 +16,7 @@ var gamestate = MOVING
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	prep_astar_grid()
 	pass # Replace with function body.
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -74,4 +76,15 @@ func try_attack_wall(actor: Actor, vector: Vector2) -> bool:
 	if success:
 		actor.bump_anim(vector)
 	return success
+	
+func prep_astar_grid() -> void:
+	astar_grid.region = Rect2i(0, 0, 36, 20)
+	astar_grid.cell_size = Vector2(tilesize, tilesize)
+	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+	astar_grid.update()
+	for x in astar_grid.region.end.x:
+		for y in astar_grid.region.end.y:
+			if not tile_map.is_coord_walkable(Vector2(x, y)):
+				astar_grid.set_point_solid(Vector2(x, y))
+	
 		
