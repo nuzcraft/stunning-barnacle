@@ -5,6 +5,10 @@ class_name Actor
 
 var tilesize = 16
 
+var action = {"up": "attack"
+, "down": "attack"
+, "left": "attack"
+, "right": "attack"}
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -29,3 +33,4 @@ func bump_anim(vector: Vector2) -> void:
 		animated_sprite_2d.flip_h = false
 	elif vector.x < 0:
 		animated_sprite_2d.flip_h = true 
+	

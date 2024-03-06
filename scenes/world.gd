@@ -91,20 +91,29 @@ func hero_moving():
 		
 func hero_action():
 	if Input.is_action_just_pressed("up"):
-		turn_taken = try_attack_wall(hero, Vector2(0, -1))
+		turn_taken = take_action(hero, hero.action["up"], Vector2(0, -1))
 		gamestate = MOVING
 		border_gradient_alpha(0.0)
 	if Input.is_action_just_pressed("down"):
-		turn_taken = try_attack_wall(hero, Vector2(0, 1))
+		turn_taken = take_action(hero, hero.action["down"], Vector2(0, 1))
 		gamestate = MOVING
 		border_gradient_alpha(0.0)
 	if Input.is_action_just_pressed("left"):
-		turn_taken = try_attack_wall(hero, Vector2(-1, 0))
+		turn_taken = take_action(hero, hero.action["left"], Vector2(-1, 0))
 		gamestate = MOVING
 		border_gradient_alpha(0.0)
 	if Input.is_action_just_pressed("right"):
-		turn_taken = try_attack_wall(hero, Vector2(1, 0))
+		turn_taken = take_action(hero, hero.action["right"], Vector2(1, 0))
 		gamestate = MOVING
 		border_gradient_alpha(0.0)
+	if Input.is_action_just_pressed("escape") or Input.is_action_just_pressed("action"):
+		turn_taken = false
+		gamestate = MOVING
+		border_gradient_alpha(0.0)
+		
+func take_action(actor: Actor, action: String, vector: Vector2) -> bool:
+	if action == "attack":
+		return try_attack_wall(actor, vector)
+	return false
 	
 		
