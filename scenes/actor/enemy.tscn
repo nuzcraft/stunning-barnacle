@@ -23,7 +23,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"default",
-"speed": 4.0
+"speed": 3.0
 }]
 
 [node name="Enemy" groups=["enemies"] instance=ExtResource("1_o58eh")]
