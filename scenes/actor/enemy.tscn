@@ -1,0 +1,39 @@
+[gd_scene load_steps=7 format=3 uid="uid://5hktlxx467jw"]
+
+[ext_resource type="PackedScene" uid="uid://erglwxl3erat" path="res://scenes/actor/actor.tscn" id="1_o58eh"]
+[ext_resource type="Script" path="res://scenes/actor/enemy.gd" id="2_ndjjn"]
+[ext_resource type="Texture2D" uid="uid://cberwt5g1yhv0" path="res://assets/sprites/tiles.png" id="3_q3ie2"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_at12y"]
+atlas = ExtResource("3_q3ie2")
+region = Rect2(0, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e7x8m"]
+atlas = ExtResource("3_q3ie2")
+region = Rect2(16, 32, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gq0m2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_at12y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e7x8m")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
+[node name="Enemy" groups=["enemies"] instance=ExtResource("1_o58eh")]
+modulate = Color(0.65098, 0.886275, 0.180392, 1)
+script = ExtResource("2_ndjjn")
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+sprite_frames = SubResource("SpriteFrames_gq0m2")
+frame_progress = 0.179509
+
+[node name="PointLight2D" parent="." index="1"]
+energy = 0.5
+texture_scale = 0.75
