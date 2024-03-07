@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://brb2ai6sro7k4"]
+
+[ext_resource type="PackedScene" uid="uid://erglwxl3erat" path="res://scenes/actor/actor.tscn" id="1_sfs7k"]
+[ext_resource type="Script" path="res://scenes/actor/builder.gd" id="2_apctk"]
+[ext_resource type="Texture2D" uid="uid://cberwt5g1yhv0" path="res://assets/sprites/tiles.png" id="3_e5mh0"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_o3p54"]
+atlas = ExtResource("3_e5mh0")
+region = Rect2(32, 32, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bym8v"]
+atlas = ExtResource("3_e5mh0")
+region = Rect2(48, 32, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tj4sq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_o3p54")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bym8v")
+}],
+"loop": true,
+"name": &"default",
+"speed": 3.0
+}]
+
+[node name="Builder" groups=["builders"] instance=ExtResource("1_sfs7k")]
+script = ExtResource("2_apctk")
+action = {
+"down": "build",
+"left": "build",
+"right": "build",
+"up": "build"
+}
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+modulate = Color(0.992157, 0.592157, 0.121569, 1)
+sprite_frames = SubResource("SpriteFrames_tj4sq")
+frame_progress = 0.14593
+
+[node name="PointLight2D" parent="." index="1"]
+energy = 0.5

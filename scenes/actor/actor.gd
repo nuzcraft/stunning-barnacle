@@ -9,7 +9,7 @@ signal died
 
 var tilesize = 16
 
-var action = {"up": "build"
+@export var action = {"up": "build"
 , "down": "attack"
 , "left": "attack"
 , "right": "attack"}

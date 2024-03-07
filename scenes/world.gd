@@ -120,6 +120,7 @@ func prep_astar_grid() -> void:
 func hero_moving():
 	if Input.is_action_just_pressed("up"):
 		turn_taken = try_move(hero, Vector2(0, -1))
+		print(tile_map.nearest_broken_wall(tile_map.local_to_map(hero.position), 3))
 	if Input.is_action_just_pressed("down"):
 		turn_taken = try_move(hero, Vector2(0, 1))
 	if Input.is_action_just_pressed("left"):
