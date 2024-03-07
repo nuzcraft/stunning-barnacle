@@ -284,17 +284,80 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture2D_kmf5c")
 
-[node name="ZLabel" type="Label" parent="Overlay"]
+[node name="MoveControl" type="Control" parent="Overlay"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Overlay/MoveControl"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 240.0
+offset_right = 164.0
+offset_bottom = 280.0
+grow_vertical = 0
+
+[node name="ArrowLabel" type="Label" parent="Overlay/MoveControl/HBoxContainer"]
+layout_mode = 2
+text = "arrows:MOVE"
+
+[node name="ZLabel" type="Label" parent="Overlay/MoveControl/HBoxContainer"]
 modulate = Color(0.976471, 0.14902, 0.447059, 1)
-offset_left = 88.0
-offset_top = 296.0
-offset_right = 243.0
-offset_bottom = 319.0
+layout_mode = 2
 text = "z:ACTION MODE"
 
-[node name="ArrowLabel" type="Label" parent="Overlay"]
+[node name="ActionControl" type="Control" parent="Overlay"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Overlay/ActionControl"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
 offset_left = 8.0
-offset_top = 296.0
-offset_right = 113.0
-offset_bottom = 319.0
-text = "arrows:MOVE"
+offset_top = -44.0
+offset_right = 61.0
+offset_bottom = -4.0
+grow_vertical = 0
+
+[node name="upLabel" type="Label" parent="Overlay/ActionControl/HBoxContainer"]
+modulate = Color(0.976471, 0.14902, 0.447059, 1)
+layout_mode = 2
+text = "up:action"
+
+[node name="pipe" type="Label" parent="Overlay/ActionControl/HBoxContainer"]
+layout_mode = 2
+text = "|"
+
+[node name="downLabel" type="Label" parent="Overlay/ActionControl/HBoxContainer"]
+modulate = Color(0.976471, 0.14902, 0.447059, 1)
+layout_mode = 2
+text = "down:action"
+
+[node name="pipe2" type="Label" parent="Overlay/ActionControl/HBoxContainer"]
+layout_mode = 2
+text = "|"
+
+[node name="leftLabel" type="Label" parent="Overlay/ActionControl/HBoxContainer"]
+modulate = Color(0.976471, 0.14902, 0.447059, 1)
+layout_mode = 2
+text = "left:action"
+
+[node name="pipe3" type="Label" parent="Overlay/ActionControl/HBoxContainer"]
+layout_mode = 2
+text = "|"
+
+[node name="rightLabel" type="Label" parent="Overlay/ActionControl/HBoxContainer"]
+modulate = Color(0.976471, 0.14902, 0.447059, 1)
+layout_mode = 2
+text = "right:action"

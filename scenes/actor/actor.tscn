@@ -40,7 +40,7 @@ animations = [{
 "speed": 3.0
 }]
 
-[node name="Actor" type="Node2D"]
+[node name="Actor" type="Node2D" groups=["actors"]]
 script = ExtResource("1_7x5nb")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
