@@ -28,6 +28,7 @@ animations = [{
 
 [node name="Builder" groups=["builders"] instance=ExtResource("1_sfs7k")]
 script = ExtResource("2_apctk")
+target_radius = 5
 action = {
 "down": "build",
 "left": "build",

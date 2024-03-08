@@ -88,6 +88,7 @@ func nearest_broken_wall(coords: Vector2, radius: int) -> Vector2:
 						target = new_coord
 					else:
 						if new_coord.distance_to(coords) < target.distance_to(coords):
-							target = new_coord
-							
-	return target
+							target = new_coord	
+	if target:
+		return target
+	return coords

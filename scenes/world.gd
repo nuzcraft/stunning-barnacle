@@ -23,6 +23,9 @@ func _ready() -> void:
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		enemy.target = tile_map.local_to_map(hero.position)
 		enemy.died.connect(_on_actor_died)
+	for builder in get_tree().get_nodes_in_group("builders"):
+		builder.target = tile_map.nearest_broken_wall(tile_map.local_to_map(builder.position), builder.target_radius)
+		builder.died.connect(_on_actor_died)
 	hero.died.connect(_on_actor_died)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -34,6 +37,24 @@ func _process(delta: float) -> void:
 			ACTION:
 				hero_action()
 	if turn_taken:
+		for builder in get_tree().get_nodes_in_group("builders"):
+			var builder_coords = tile_map.local_to_map(builder.position)
+			var path: Array[Vector2i] = astar_grid.get_id_path(builder_coords, builder.target)
+			if not path and builder_coords != builder.target: # target is not reachable or is a wall
+				var new_path: Array[Vector2i]
+				for cell in tile_map.get_surrounding_cells(builder.target):
+					new_path = astar_grid.get_id_path(builder_coords, cell)
+					if new_path and (not path or (new_path.size() + 1) < path.size()):
+						path = new_path
+						path.append(builder.target)			
+			if path.size() > 1:
+				var vector = path[1] - path[0]
+				if path.size() == 2:
+					try_build(builder, vector)
+				else:
+					try_move(builder, vector)
+		for builder in get_tree().get_nodes_in_group("builders"):
+			builder.target = tile_map.nearest_broken_wall(tile_map.local_to_map(builder.position), builder.target_radius)
 		for enemy in get_tree().get_nodes_in_group("enemies"):
 			var path: Array[Vector2i] = astar_grid.get_id_path(tile_map.local_to_map(enemy.position), enemy.target)
 			if path.size() > 1:
@@ -87,7 +108,7 @@ func try_build(actor: Actor, vector: Vector2) -> bool:
 				return false #actor on spot
 	var success = tile_map.try_build_wall(coords)
 	if success:
-		actor.bump_anim(vector)
+		#actor.bump_anim(vector)
 		astar_grid.set_point_solid(coords, not tile_map.is_coord_walkable(coords))
 	return success
 	
@@ -120,7 +141,6 @@ func prep_astar_grid() -> void:
 func hero_moving():
 	if Input.is_action_just_pressed("up"):
 		turn_taken = try_move(hero, Vector2(0, -1))
-		print(tile_map.nearest_broken_wall(tile_map.local_to_map(hero.position), 3))
 	if Input.is_action_just_pressed("down"):
 		turn_taken = try_move(hero, Vector2(0, 1))
 	if Input.is_action_just_pressed("left"):
