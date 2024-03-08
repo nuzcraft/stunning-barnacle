@@ -8,6 +8,7 @@ extends Node2D
 
 var tilesize = 16
 var astar_grid = AStarGrid2D.new()
+var astar_grid_2 = AStarGrid2D.new()
 
 enum {
 	MOVING,
@@ -19,7 +20,7 @@ var turn_taken = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	prep_astar_grid()
+	prep_astar_grids()
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		enemy.target = tile_map.local_to_map(hero.position)
 		enemy.died.connect(_on_actor_died)
@@ -39,11 +40,11 @@ func _process(delta: float) -> void:
 	if turn_taken:
 		for builder in get_tree().get_nodes_in_group("builders"):
 			var builder_coords = tile_map.local_to_map(builder.position)
-			var path: Array[Vector2i] = astar_grid.get_id_path(builder_coords, builder.target)
+			var path: Array[Vector2i] = astar_grid_2.get_id_path(builder_coords, builder.target)
 			if not path and builder_coords != builder.target: # target is not reachable or is a wall
 				var new_path: Array[Vector2i]
 				for cell in tile_map.get_surrounding_cells(builder.target):
-					new_path = astar_grid.get_id_path(builder_coords, cell)
+					new_path = astar_grid_2.get_id_path(builder_coords, cell)
 					if new_path and (not path or (new_path.size() + 1) < path.size()):
 						path = new_path
 						path.append(builder.target)			
@@ -109,7 +110,8 @@ func try_build(actor: Actor, vector: Vector2) -> bool:
 	var success = tile_map.try_build_wall(coords)
 	if success:
 		#actor.bump_anim(vector)
-		astar_grid.set_point_solid(coords, not tile_map.is_coord_walkable(coords))
+		astar_grid.set_point_weight_scale(coords, 8.0)
+		astar_grid_2.set_point_solid(coords, not tile_map.is_coord_walkable(coords))
 	return success
 	
 func try_attack(actor: Actor, vector: Vector2) -> bool:
@@ -125,10 +127,11 @@ func try_attack(actor: Actor, vector: Vector2) -> bool:
 	var success = tile_map.try_attack_wall(coords)
 	if success:
 		actor.bump_anim(vector)
-		astar_grid.set_point_solid(coords, not tile_map.is_coord_walkable(coords))
+		astar_grid.set_point_weight_scale(coords, 8.0)
+		astar_grid_2.set_point_solid(coords, not tile_map.is_coord_walkable(coords))
 	return success
 	
-func prep_astar_grid() -> void:
+func prep_astar_grids() -> void:
 	astar_grid.region = Rect2i(0, 0, 36, 20)
 	astar_grid.cell_size = Vector2(tilesize, tilesize)
 	astar_grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
@@ -136,7 +139,15 @@ func prep_astar_grid() -> void:
 	for x in astar_grid.region.end.x:
 		for y in astar_grid.region.end.y:
 			if not tile_map.is_coord_walkable(Vector2(x, y)):
-				astar_grid.set_point_solid(Vector2(x, y))
+				astar_grid.set_point_weight_scale(Vector2(x, y), 8.0)
+	astar_grid_2.region = Rect2i(0, 0, 36, 20)
+	astar_grid_2.cell_size = Vector2(tilesize, tilesize)
+	astar_grid_2.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_NEVER
+	astar_grid_2.update()
+	for x in astar_grid_2.region.end.x:
+		for y in astar_grid_2.region.end.y:
+			if not tile_map.is_coord_walkable(Vector2(x, y)):
+				astar_grid_2.set_point_solid(Vector2(x, y))
 				
 func hero_moving():
 	if Input.is_action_just_pressed("up"):
