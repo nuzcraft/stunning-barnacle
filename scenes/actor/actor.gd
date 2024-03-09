@@ -4,15 +4,16 @@ class_name Actor
 signal died
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
-
 @export var health: int = 3
+@export var target_radius: int = 3
+@export var action = {"up": "NONE"
+, "down": "NONE"
+, "left": "NONE"
+, "right": "NONE"}
+@export var suck_action = "ATTACK"
 
 var tilesize = 16
-
-var action = {"up": "build"
-, "down": "attack"
-, "left": "attack"
-, "right": "attack"}
+var target: Vector2i = Vector2i.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

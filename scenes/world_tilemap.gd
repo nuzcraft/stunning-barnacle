@@ -64,3 +64,31 @@ func is_coord_walkable(coords: Vector2) -> bool:
 		if fg_data.terrain == 0 and fg_data.terrain_set == 0:
 			return false
 	return true
+	
+func nearest_broken_wall(coords: Vector2, radius: int) -> Vector2:
+	var target: Vector2
+	for x in range(coords.x - radius, coords.x + radius):
+		for y in range(coords.y - radius, coords.y + radius):
+			var new_coord = Vector2(x, y)
+			var data = get_cell_tile_data(e_layers.FOREGROUND, new_coord)
+			var data2 = get_cell_tile_data(e_layers.FOREGROUND2, new_coord)
+			if data2:
+				var atlas_coords2 = get_cell_atlas_coords(e_layers.FOREGROUND2, new_coord)
+				if data.terrain == 0 and data.terrain_set == 0:
+					if atlas_coords2 == Vector2i(9,2): # broken wall
+						if not target:
+							target = new_coord
+						else:
+							if new_coord.distance_to(coords) < target.distance_to(coords):
+								target = new_coord
+			if data:
+				var atlas_coords = get_cell_atlas_coords(e_layers.FOREGROUND, new_coord)
+				if atlas_coords == Vector2i(9,0):
+					if not target:
+						target = new_coord
+					else:
+						if new_coord.distance_to(coords) < target.distance_to(coords):
+							target = new_coord	
+	if target:
+		return target
+	return coords
