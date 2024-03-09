@@ -30,11 +30,12 @@ animations = [{
 script = ExtResource("2_apctk")
 target_radius = 5
 action = {
-"down": "build",
-"left": "build",
-"right": "build",
-"up": "build"
+"down": "BUILD",
+"left": "BUILD",
+"right": "BUILD",
+"up": "BUILD"
 }
+suck_action = "BUILD"
 
 [node name="AnimatedSprite2D" parent="." index="0"]
 modulate = Color(0.992157, 0.592157, 0.121569, 1)

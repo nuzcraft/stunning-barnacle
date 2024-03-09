@@ -29,11 +29,19 @@ animations = [{
 [node name="Enemy" groups=["enemies"] instance=ExtResource("1_o58eh")]
 modulate = Color(0.65098, 0.886275, 0.180392, 1)
 script = ExtResource("2_ndjjn")
+target_radius = 6
+action = {
+"down": "ATTACK",
+"left": "ATTACK",
+"right": "ATTACK",
+"up": "ATTACK"
+}
 
 [node name="AnimatedSprite2D" parent="." index="0"]
 sprite_frames = SubResource("SpriteFrames_gq0m2")
 frame_progress = 0.179509
 
 [node name="PointLight2D" parent="." index="1"]
+enabled = false
 energy = 0.5
 texture_scale = 0.75
