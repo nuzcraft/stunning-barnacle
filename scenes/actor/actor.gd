@@ -4,6 +4,8 @@ class_name Actor
 signal died
 
 @onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
+@onready var health_label: Label = $AnimatedSprite2D/HealthLabel
+
 @export var health: int = 3
 @export var target_radius: int = 3
 @export var action = {"up": "NONE"
@@ -22,6 +24,7 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	animated_sprite_2d.position = animated_sprite_2d.position.move_toward(Vector2.ZERO, 100.0*delta)
+	health_label.text = str(health)
 	
 func move(vector: Vector2) -> void:
 	position += vector * tilesize

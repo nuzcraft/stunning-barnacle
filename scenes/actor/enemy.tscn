@@ -41,6 +41,9 @@ action = {
 sprite_frames = SubResource("SpriteFrames_gq0m2")
 frame_progress = 0.179509
 
+[node name="HealthLabel" parent="AnimatedSprite2D" index="0"]
+visible = false
+
 [node name="PointLight2D" parent="." index="1"]
 enabled = false
 energy = 0.5

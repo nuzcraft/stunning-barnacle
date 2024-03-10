@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://erglwxl3erat"]
+[gd_scene load_steps=11 format=3 uid="uid://erglwxl3erat"]
 
 [ext_resource type="Script" path="res://scenes/actor/actor.gd" id="1_7x5nb"]
 [ext_resource type="Texture2D" uid="uid://cberwt5g1yhv0" path="res://assets/sprites/tiles.png" id="1_bo2kj"]
 [ext_resource type="Texture2D" uid="uid://dvwuhqnsfxwp6" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.webp" id="3_xland"]
+[ext_resource type="FontFile" uid="uid://dohiw5o2agkwj" path="res://assets/fonts/Not Jam Chunky Sans 6/NotJamChunkySans.ttf" id="4_kxmdd"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_axegb"]
 atlas = ExtResource("1_bo2kj")
@@ -40,6 +41,13 @@ animations = [{
 "speed": 3.0
 }]
 
+[sub_resource type="LabelSettings" id="LabelSettings_0kssk"]
+line_spacing = 0.0
+font = ExtResource("4_kxmdd")
+font_size = 6
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
 [node name="Actor" type="Node2D" groups=["actors"]]
 script = ExtResource("1_7x5nb")
 
@@ -47,6 +55,19 @@ script = ExtResource("1_7x5nb")
 sprite_frames = SubResource("SpriteFrames_a0nn2")
 autoplay = "default"
 frame_progress = 0.349858
+
+[node name="HealthLabel" type="Label" parent="AnimatedSprite2D"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -28.0
+offset_right = 12.0
+offset_bottom = 16.0
+grow_horizontal = 2
+text = "10"
+label_settings = SubResource("LabelSettings_0kssk")
+horizontal_alignment = 1
+vertical_alignment = 2
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 shadow_enabled = true
