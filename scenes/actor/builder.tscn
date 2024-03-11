@@ -42,8 +42,5 @@ modulate = Color(0.992157, 0.592157, 0.121569, 1)
 sprite_frames = SubResource("SpriteFrames_tj4sq")
 frame_progress = 0.14593
 
-[node name="HealthLabel" parent="AnimatedSprite2D" index="0"]
-visible = false
-
 [node name="PointLight2D" parent="." index="1"]
 energy = 0.5

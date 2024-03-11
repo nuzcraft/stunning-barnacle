@@ -57,17 +57,18 @@ autoplay = "default"
 frame_progress = 0.349858
 
 [node name="HealthLabel" type="Label" parent="AnimatedSprite2D"]
+modulate = Color(1, 1, 1, 0.596078)
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -28.0
-offset_right = 12.0
-offset_bottom = 16.0
+offset_left = -25.0
+offset_top = 3.0
+offset_right = 15.0
+offset_bottom = 19.0
 grow_horizontal = 2
 text = "10"
 label_settings = SubResource("LabelSettings_0kssk")
 horizontal_alignment = 1
-vertical_alignment = 2
 
 [node name="PointLight2D" type="PointLight2D" parent="."]
 shadow_enabled = true

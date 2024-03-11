@@ -1,0 +1,80 @@
+[gd_scene load_steps=2 format=3 uid="uid://dkrp3mof0u7a2"]
+
+[ext_resource type="Script" path="res://scenes/main_menu.gd" id="1_7kpsf"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7kpsf")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.127175, 0.473077, 0.533224, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 13
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Suck-Bot"
+horizontal_alignment = 1
+
+[node name="SubTitle" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Island Defense Roguelike"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="StartButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Start Game"
+
+[node name="ExitButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Exit Game"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -58.5
+offset_top = -58.0
+offset_right = 58.5
+offset_bottom = -18.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 2
+
+[node name="Credits" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+text = "a game by nuzcraft"
+horizontal_alignment = 1
+
+[node name="Credits2" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+text = "fonts by not jam"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]

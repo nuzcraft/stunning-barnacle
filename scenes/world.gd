@@ -113,7 +113,7 @@ func _process(delta: float) -> void:
 					try_move(enemy, vector)
 		for enemy: Actor in get_tree().get_nodes_in_group("enemies"):
 			if enemy.position.distance_to(hero.position) < enemy.target_radius * tilesize:
-				if enemy.position.distance_to(hero.position) <= enemy.position.distance_to(lighthouse.position):
+				if enemy.position.distance_to(hero.position) < enemy.position.distance_to(lighthouse.position):
 					enemy.target = tile_map.local_to_map(hero.position)
 			else:
 				enemy.target = tile_map.local_to_map(lighthouse.position)
