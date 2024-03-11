@@ -7,7 +7,7 @@ on:
 env:
   GODOT_VERSION: 4.1.1
   EXPORT_NAME: suck-bot
-  ITCH_IO: false #set to true if you want to enable automatic itch.io deploy
+  ITCH_IO: true #set to true if you want to enable automatic itch.io deploy
 
 jobs:
   export-windows:
