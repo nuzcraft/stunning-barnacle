@@ -7,8 +7,16 @@ extends Node2D
 @onready var action_control: Control = $Overlay/ActionControl
 @onready var suck_control: Control = $Overlay/SuckControl
 @onready var lighthouse: Lighthouse = $Lighthouse
+@onready var builder_spawners: Node = $BuilderSpawners
+@onready var enemy_spawners: Node = $EnemySpawners
+@onready var turn_label: Label = $Overlay/TurnLabel
+@onready var pause_and_game_over: CanvasLayer = $PauseAndGameOver
+@onready var resume_button: Button = $PauseAndGameOver/VBoxContainer/HBoxContainer/ResumeButton
+@onready var game_over_label: Label = $PauseAndGameOver/VBoxContainer/GameOverLabel
 
 const SUCK_EFFECT = preload("res://scenes/effects/suck.tscn")
+const BUILDER = preload("res://scenes/actor/builder.tscn")
+const ENEMY = preload("res://scenes/actor/enemy.tscn")
 
 var tilesize = 16
 var astar_grid = AStarGrid2D.new()
@@ -24,9 +32,19 @@ enum {
 }
 var gamestate = MOVING
 var turn_taken = false
+var num_turns = -1
+var builders_to_spawn = 0
+
+var enemy_spawn_base_multiplier = 1.5
+var enemy_spawn_base = 2
+var enemies_to_spawn = 0
+var turns_till_enemy_spawn = 0
+
+var paused = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	randomize()
 	prep_astar_grids()
 	for enemy in get_tree().get_nodes_in_group("enemies"):
 		enemy.target = tile_map.local_to_map(lighthouse.position)
@@ -34,10 +52,13 @@ func _ready() -> void:
 	for builder in get_tree().get_nodes_in_group("builders"):
 		builder.target = tile_map.nearest_broken_wall(tile_map.local_to_map(builder.position), builder.target_radius)
 		builder.died.connect(_on_actor_died)
+	for lighthouse in get_tree().get_nodes_in_group("lighthouses"):
+		lighthouse.died.connect(_on_actor_died)
 	hero.died.connect(_on_actor_died)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	set_turn_label()
 	if not turn_taken:
 		match gamestate:
 			MOVING:
@@ -47,6 +68,7 @@ func _process(delta: float) -> void:
 			SUCK:
 				hero_suck()
 	if turn_taken:
+		# do things
 		for builder in get_tree().get_nodes_in_group("builders"):
 			var builder_coords = tile_map.local_to_map(builder.position)
 			var path: Array[Vector2i] = astar_grid_2.get_id_path(builder_coords, builder.target)
@@ -63,6 +85,24 @@ func _process(delta: float) -> void:
 					try_build(builder, vector)
 				else:
 					try_move(builder, vector)
+		# spawn stuff
+		if num_turns % 15 == 0 and (get_tree().get_nodes_in_group("builders").size() + builders_to_spawn) < 4:
+			builders_to_spawn += 1
+		if builders_to_spawn > 0:
+			try_spawn_builder()
+		
+		if get_tree().get_nodes_in_group("enemies").size() == 0 and enemies_to_spawn == 0:
+			if turns_till_enemy_spawn == 0:
+				enemies_to_spawn = enemy_spawn_base
+				enemy_spawn_base = ceili(enemy_spawn_base * enemy_spawn_base_multiplier)
+				enemy_spawn_base_multiplier = max(enemy_spawn_base_multiplier - 0.1, 1.1)
+				turns_till_enemy_spawn = 10
+				hero.health = 20
+			else:
+				turns_till_enemy_spawn -= 1
+		if enemies_to_spawn > 0:
+			try_spawn_enemy()
+		# set target			
 		for builder in get_tree().get_nodes_in_group("builders"):
 			builder.target = tile_map.nearest_broken_wall(tile_map.local_to_map(builder.position), builder.target_radius)
 		for enemy in get_tree().get_nodes_in_group("enemies"):
@@ -73,7 +113,8 @@ func _process(delta: float) -> void:
 					try_move(enemy, vector)
 		for enemy: Actor in get_tree().get_nodes_in_group("enemies"):
 			if enemy.position.distance_to(hero.position) < enemy.target_radius * tilesize:
-				enemy.target = tile_map.local_to_map(hero.position)
+				if enemy.position.distance_to(hero.position) < enemy.position.distance_to(lighthouse.position):
+					enemy.target = tile_map.local_to_map(hero.position)
 			else:
 				enemy.target = tile_map.local_to_map(lighthouse.position)
 		turn_taken = false
@@ -120,6 +161,9 @@ func set_action_control_labels() -> void:
 	hbox.get_node("downLabel").text = "down:" + hero.action["down"]
 	hbox.get_node("leftLabel").text = "left:" + hero.action["left"]
 	hbox.get_node("rightLabel").text = "right:" + hero.action["right"]
+	
+func set_turn_label() -> void:
+	turn_label.text = "Turns: " + str(num_turns + 1)
 	
 func try_build(actor: Actor, vector: Vector2) -> bool:
 	var destination = actor.position + (vector * tilesize)
@@ -172,27 +216,40 @@ func prep_astar_grids() -> void:
 				astar_grid_2.set_point_solid(Vector2(x, y))
 				
 func hero_moving():
-	if Input.is_action_just_pressed("up"):
-		turn_taken = try_move(hero, Vector2(0, -1))
-	if Input.is_action_just_pressed("down"):
-		turn_taken = try_move(hero, Vector2(0, 1))
-	if Input.is_action_just_pressed("left"):
-		turn_taken = try_move(hero, Vector2(-1, 0))
-	if Input.is_action_just_pressed("right"):
-		turn_taken = try_move(hero, Vector2(1, 0))
-	if Input.is_action_just_pressed("action"):
-		gamestate = ACTION
-		border_gradient_alpha(1.0)
-		border_gradient_color(magenta)
-		move_control_alpha(0.0)
-		action_control_alpha(1.0)
-	if Input.is_action_just_pressed("suck"):
-		gamestate = SUCK
-		border_gradient_alpha(1.0)
-		border_gradient_color(blue)
-		move_control_alpha(0.0)
-		suck_control_alpha(1.0)
-		action_control_alpha(0.5)
+	if not paused:
+		if Input.is_action_just_pressed("up"):
+			turn_taken = try_move(hero, Vector2(0, -1))
+		if Input.is_action_just_pressed("down"):
+			turn_taken = try_move(hero, Vector2(0, 1))
+		if Input.is_action_just_pressed("left"):
+			turn_taken = try_move(hero, Vector2(-1, 0))
+		if Input.is_action_just_pressed("right"):
+			turn_taken = try_move(hero, Vector2(1, 0))
+		if Input.is_action_just_pressed("action"):
+			gamestate = ACTION
+			border_gradient_alpha(1.0)
+			border_gradient_color(magenta)
+			move_control_alpha(0.0)
+			action_control_alpha(1.0)
+		if Input.is_action_just_pressed("suck"):
+			gamestate = SUCK
+			border_gradient_alpha(1.0)
+			border_gradient_color(blue)
+			move_control_alpha(0.0)
+			suck_control_alpha(1.0)
+			action_control_alpha(0.5)
+		if turn_taken:
+			num_turns += 1
+	if Input.is_action_just_pressed("escape"):
+		if paused == false:
+			paused = true
+			pause_and_game_over.show()
+			game_over_label.hide()
+			resume_button.show()
+		else:
+			paused = false
+			pause_and_game_over.hide()
+			
 		
 func hero_action():
 	if Input.is_action_just_pressed("up"):
@@ -225,6 +282,8 @@ func hero_action():
 		border_gradient_alpha(0.0)
 		move_control_alpha(1.0)
 		action_control_alpha(0.0)
+	if turn_taken:
+		num_turns += 1
 		
 func hero_suck():
 	if Input.is_action_just_pressed("up"):
@@ -262,6 +321,8 @@ func hero_suck():
 		move_control_alpha(1.0)
 		suck_control_alpha(0.0)
 		action_control_alpha(0.0)
+	if turn_taken:
+		num_turns += 1
 		
 func take_action(actor: Actor, action: String, vector: Vector2) -> bool:
 	if action == "ATTACK":
@@ -274,7 +335,7 @@ func suck(actor: Actor, action_slot: String, vector: Vector2) -> bool:
 	var destination = actor.position + (vector * tilesize)
 	var coords = tile_map.local_to_map(destination)
 	for act: Actor in get_tree().get_nodes_in_group("actors"):
-		if actor != act:
+		if actor != act and not act is Lighthouse:
 			var act_coords = tile_map.local_to_map(act.position)
 			if act_coords == coords and act.health <= 3:
 				actor.action[action_slot] = act.suck_action
@@ -288,14 +349,48 @@ func suck(actor: Actor, action_slot: String, vector: Vector2) -> bool:
 				elif vector == Vector2(-1, 0):
 					suck_effect.rotation_degrees = 270
 				add_child(suck_effect)
+				if act is Builder:
+					actor.health += 1
 				act.die()
 				return true
 	return false
 	
 func _on_actor_died(actor: Actor) -> void:
 	await get_tree().process_frame
-	if actor == hero:
-		get_tree().reload_current_scene()
+	if actor == hero or actor is Lighthouse:
+		pause_and_game_over.show()
+		game_over_label.show()
+		resume_button.hide()
 	actor.queue_free()
 	
-		
+func try_spawn_builder() -> void:
+	var spawner = builder_spawners.get_children().pick_random()
+	for actor in get_tree().get_nodes_in_group("actors"):
+		if actor.position == spawner.position:
+			return
+	var builder = BUILDER.instantiate()
+	builder.position = spawner.position
+	add_child(builder)
+	builder.died.connect(_on_actor_died)
+	builders_to_spawn -= 1
+	
+func try_spawn_enemy() -> void:
+	var spawner = enemy_spawners.get_children().pick_random()
+	for actor in get_tree().get_nodes_in_group("actors"):
+		if actor.position == spawner.position:
+			return
+	var enemy = ENEMY.instantiate()
+	enemy.position = spawner.position
+	add_child(enemy)
+	enemy.died.connect(_on_actor_died)
+	enemies_to_spawn -= 1
+
+func _on_restart_button_pressed() -> void:
+	get_tree().reload_current_scene()
+
+func _on_quit_button_pressed() -> void:
+	get_tree().quit()
+
+func _on_resume_button_pressed() -> void:
+	pause_and_game_over.hide()
+	paused = false

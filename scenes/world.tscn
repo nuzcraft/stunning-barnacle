@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://dlb0a6mbwalfl"]
+[gd_scene load_steps=33 format=3 uid="uid://dlb0a6mbwalfl"]
 
 [ext_resource type="Texture2D" uid="uid://cberwt5g1yhv0" path="res://assets/sprites/tiles.png" id="1_5sept"]
 [ext_resource type="Script" path="res://scenes/world.gd" id="1_lv5tp"]
@@ -6,8 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://d0hobivjgsatg" path="res://assets/sprites/shapes_trans.png" id="3_pvgen"]
 [ext_resource type="Script" path="res://scenes/world_tilemap.gd" id="5_6mopx"]
 [ext_resource type="PackedScene" uid="uid://x3ksamkvkl13" path="res://scenes/actor/hero.tscn" id="5_g5gmo"]
-[ext_resource type="PackedScene" uid="uid://5hktlxx467jw" path="res://scenes/actor/enemy.tscn" id="7_hy4x3"]
-[ext_resource type="PackedScene" uid="uid://brb2ai6sro7k4" path="res://scenes/actor/builder.tscn" id="8_rg1ba"]
 [ext_resource type="Texture2D" uid="uid://dvwuhqnsfxwp6" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.webp" id="9_6jos7"]
 [ext_resource type="PackedScene" uid="uid://cki5el3yru0v0" path="res://scenes/actor/lighthouse.tscn" id="9_mlw7q"]
 
@@ -251,23 +249,6 @@ height = 324
 fill = 2
 fill_from = Vector2(0.5, 0.5)
 
-[sub_resource type="Animation" id="Animation_o4s8n"]
-resource_name = "spin_light_occluder"
-length = 10.0
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Lighthouse/LightOccluder2D:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 10),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [0.0, 6.28319]
-}
-
 [sub_resource type="Animation" id="Animation_5j6q7"]
 length = 0.001
 tracks/0/type = "value"
@@ -359,6 +340,23 @@ tracks/2/keys = {
 "values": [0.1, 0.25, 0.25, 0.1, 0.1]
 }
 
+[sub_resource type="Animation" id="Animation_o4s8n"]
+resource_name = "spin_light_occluder"
+length = 10.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Lighthouse/LightOccluder2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 10),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 6.28319]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qrcnb"]
 _data = {
 "RESET": SubResource("Animation_5j6q7"),
@@ -385,25 +383,63 @@ layer_3/tile_data = PackedInt32Array()
 script = ExtResource("5_6mopx")
 
 [node name="Hero" parent="." instance=ExtResource("5_g5gmo")]
+z_index = 10
 position = Vector2(248, 168)
 
-[node name="Enemy" parent="." instance=ExtResource("7_hy4x3")]
-position = Vector2(472, 184)
+[node name="BuilderSpawners" type="Node" parent="."]
 
-[node name="Enemy2" parent="." instance=ExtResource("7_hy4x3")]
+[node name="BuilderSpawner" type="Node2D" parent="BuilderSpawners"]
+position = Vector2(200, 168)
+
+[node name="BuilderSpawner2" type="Node2D" parent="BuilderSpawners"]
+position = Vector2(408, 168)
+
+[node name="EnemySpawners" type="Node" parent="."]
+
+[node name="EnemySpawner" type="Node2D" parent="EnemySpawners"]
 position = Vector2(296, 24)
 
-[node name="Enemy3" parent="." instance=ExtResource("7_hy4x3")]
+[node name="EnemySpawner2" type="Node2D" parent="EnemySpawners"]
+position = Vector2(360, 40)
+
+[node name="EnemySpawner3" type="Node2D" parent="EnemySpawners"]
 position = Vector2(408, 56)
 
-[node name="Enemy4" parent="." instance=ExtResource("7_hy4x3")]
-position = Vector2(472, 136)
+[node name="EnemySpawner4" type="Node2D" parent="EnemySpawners"]
+position = Vector2(472, 104)
 
-[node name="Builder" parent="." instance=ExtResource("8_rg1ba")]
-position = Vector2(200, 184)
+[node name="EnemySpawner5" type="Node2D" parent="EnemySpawners"]
+position = Vector2(488, 168)
 
-[node name="Builder2" parent="." instance=ExtResource("8_rg1ba")]
-position = Vector2(440, 232)
+[node name="EnemySpawner6" type="Node2D" parent="EnemySpawners"]
+position = Vector2(488, 232)
+
+[node name="EnemySpawner7" type="Node2D" parent="EnemySpawners"]
+position = Vector2(488, 280)
+
+[node name="EnemySpawner8" type="Node2D" parent="EnemySpawners"]
+position = Vector2(408, 312)
+
+[node name="EnemySpawner9" type="Node2D" parent="EnemySpawners"]
+position = Vector2(360, 296)
+
+[node name="EnemySpawner10" type="Node2D" parent="EnemySpawners"]
+position = Vector2(216, 312)
+
+[node name="EnemySpawner11" type="Node2D" parent="EnemySpawners"]
+position = Vector2(136, 72)
+
+[node name="EnemySpawner13" type="Node2D" parent="EnemySpawners"]
+position = Vector2(88, 136)
+
+[node name="EnemySpawner14" type="Node2D" parent="EnemySpawners"]
+position = Vector2(88, 200)
+
+[node name="EnemySpawner15" type="Node2D" parent="EnemySpawners"]
+position = Vector2(104, 248)
+
+[node name="EnemySpawner12" type="Node2D" parent="EnemySpawners"]
+position = Vector2(184, 56)
 
 [node name="Lighthouse" parent="." instance=ExtResource("9_mlw7q")]
 position = Vector2(296, 168)
@@ -546,6 +582,74 @@ modulate = Color(0.4, 0.85098, 0.937255, 1)
 layout_mode = 2
 text = "arrows:SUCK"
 
+[node name="TurnLabel" type="Label" parent="Overlay"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -48.0
+offset_top = -28.0
+offset_right = -8.0
+offset_bottom = -12.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 10
+text = "Turns: 0"
+horizontal_alignment = 2
+
+[node name="PauseAndGameOver" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="PauseAndGameOver"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.4, 0.85098, 0.937255, 0.392157)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseAndGameOver"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -66.0
+offset_top = -31.5
+offset_right = 66.0
+offset_bottom = 31.5
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="GameOverLabel" type="Label" parent="PauseAndGameOver/VBoxContainer"]
+visible = false
+layout_mode = 2
+text = "Thank YOU for Playing!
+Please Try Again!
+"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PauseAndGameOver/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="ResumeButton" type="Button" parent="PauseAndGameOver/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Resume
+"
+
+[node name="RestartButton" type="Button" parent="PauseAndGameOver/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "Restart"
+
+[node name="QuitButton" type="Button" parent="PauseAndGameOver/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+text = "Quit"
+
 [node name="DirectionalLight2D" type="DirectionalLight2D" parent="."]
 rotation = -1.5708
 energy = 0.1
@@ -562,3 +666,7 @@ libraries = {
 "": SubResource("AnimationLibrary_qrcnb")
 }
 autoplay = "day_night"
+
+[connection signal="pressed" from="PauseAndGameOver/VBoxContainer/HBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="PauseAndGameOver/VBoxContainer/HBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="PauseAndGameOver/VBoxContainer/HBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
