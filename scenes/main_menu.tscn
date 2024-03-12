@@ -76,5 +76,33 @@ layout_mode = 2
 text = "fonts by not jam"
 horizontal_alignment = 1
 
+[node name="Credits3" type="Label" parent="VBoxContainer2"]
+layout_mode = 2
+text = "sounds by kenney"
+horizontal_alignment = 1
+
+[node name="HighScoresLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+offset_left = 86.0
+offset_top = 128.0
+offset_right = 175.0
+offset_bottom = 224.0
+bbcode_enabled = true
+text = "[p align=center]high scores
+[color=gold]#1: 100[/color]
+[color=silver]#2: 200[/color]
+[color=saddlebrown]#3: 500[/color]
+#4: 3
+#5: 3
+#6: 3
+#7: 3
+#8: 3
+#9: 3
+#10: 3
+[/p]"
+fit_content = true
+
+[connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/StartButton" to="." method="_on_start_button_mouse_entered"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/ExitButton" to="." method="_on_exit_button_mouse_entered"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
