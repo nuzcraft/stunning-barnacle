@@ -181,6 +181,7 @@ func try_build(actor: Actor, vector: Vector2) -> bool:
 				return false #actor on spot
 	var success = tile_map.try_build_wall(coords)
 	if success:
+		SoundPlayer.play_sound(SoundPlayer.IMPACT_SOFT_HEAVY_003)
 		#actor.bump_anim(vector)
 		astar_grid.set_point_weight_scale(coords, 8.0)
 		astar_grid_2.set_point_solid(coords, not tile_map.is_coord_walkable(coords))
@@ -360,6 +361,7 @@ func suck(actor: Actor, action_slot: String, vector: Vector2) -> bool:
 				elif vector == Vector2(-1, 0):
 					suck_effect.rotation_degrees = 270
 				add_child(suck_effect)
+				SoundPlayer.play_sound(SoundPlayer.SUCK)
 				if act is Builder:
 					actor.health += 1
 				act.die()

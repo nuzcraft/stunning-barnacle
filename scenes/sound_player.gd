@@ -12,6 +12,7 @@ const IMPACT_MINING_002 = preload("res://assets/sounds/impactMining_002.ogg")
 const IMPACT_SOFT_HEAVY_003 = preload("res://assets/sounds/impactSoft_heavy_003.ogg")
 const DOOR_CLOSE_4 = preload("res://assets/sounds/doorClose_4.ogg")
 const IMPACT_PLANK_MEDIUM_004 = preload("res://assets/sounds/impactPlank_medium_004.ogg")
+const SUCK = preload("res://assets/sounds/suck.wav")
 
 @onready var audioPlayers := $AudioPlayers
 @onready var musicPlayers := $MusicPlayers
