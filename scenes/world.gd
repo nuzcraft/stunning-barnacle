@@ -17,6 +17,7 @@ extends Node2D
 const SUCK_EFFECT = preload("res://scenes/effects/suck.tscn")
 const BUILDER = preload("res://scenes/actor/builder.tscn")
 const ENEMY = preload("res://scenes/actor/enemy.tscn")
+const FIRE_ENEMY = preload("res://scenes/actor/fire_enemy.tscn")
 const magenta: Color = "#f92672"
 const blue: Color = "#66d9ef"
 
@@ -112,7 +113,10 @@ func _process(delta: float) -> void:
 			var path: Array[Vector2i] = astar_grid.get_id_path(tile_map.local_to_map(enemy.position), enemy.target)
 			if path.size() > 1:
 				var vector = path[1] - path[0]
-				if not try_attack(enemy, vector):
+				if enemy.is_in_group("fire_enemies"):
+					if not try_fireball(enemy, vector):
+						try_move(enemy, vector)
+				elif not try_attack(enemy, vector):
 					try_move(enemy, vector)
 		for enemy: Actor in get_tree().get_nodes_in_group("enemies"):
 			if lighthouse:
@@ -201,8 +205,33 @@ func try_attack(actor: Actor, vector: Vector2) -> bool:
 	var success = tile_map.try_attack_wall(coords)
 	if success:
 		actor.bump_anim(vector)
-		astar_grid.set_point_weight_scale(coords, 8.0)
+		astar_grid.set_point_weight_scale(coords, 1.0)
 		astar_grid_2.set_point_solid(coords, not tile_map.is_coord_walkable(coords))
+	return success
+	
+func try_fireball(actor: Actor, vector: Vector2) -> bool:
+	var destination = actor.position + (vector * tilesize)
+	var destination2 = actor.position + (vector * tilesize * 2)
+	var coords = tile_map.local_to_map(destination)
+	var coords2 = tile_map.local_to_map(destination2)
+	for act: Actor in get_tree().get_nodes_in_group("actors"):
+		if actor != act:
+			var act_coords = tile_map.local_to_map(act.position)
+			if act_coords == coords or act_coords == coords2:
+				act.damage(1)
+				#actor.bump_anim(vector) # TODO: FIRE SPRITE
+				SoundPlayer.play_sound(SoundPlayer.IMPACT_PLANK_MEDIUM_004) #TODO FIRE SOUND
+				return true
+	var success = tile_map.try_attack_wall(coords)
+	var success2 = tile_map.try_attack_wall(coords2)
+	if success:
+		#actor.bump_anim(vector)
+		astar_grid.set_point_weight_scale(coords, 1.0)
+		astar_grid_2.set_point_solid(coords, not tile_map.is_coord_walkable(coords))
+	if success2:
+		#actor.bump_anim(vector)
+		astar_grid.set_point_weight_scale(coords2, 1.0)
+		astar_grid_2.set_point_solid(coords2, not tile_map.is_coord_walkable(coords))
 	return success
 	
 func prep_astar_grids() -> void:
@@ -341,6 +370,8 @@ func take_action(actor: Actor, action: String, vector: Vector2) -> bool:
 		return try_attack(actor, vector)
 	elif action == "BUILD":
 		return try_build(actor, vector)
+	elif action == "FIREBALL":
+		return try_fireball(actor, vector)
 	return false
 	
 func suck(actor: Actor, action_slot: String, vector: Vector2) -> bool:
@@ -394,7 +425,7 @@ func try_spawn_enemy() -> void:
 	for actor in get_tree().get_nodes_in_group("actors"):
 		if actor.position == spawner.position:
 			return
-	var enemy = ENEMY.instantiate()
+	var enemy = FIRE_ENEMY.instantiate()
 	enemy.position = spawner.position
 	add_child(enemy)
 	enemy.died.connect(_on_actor_died)
