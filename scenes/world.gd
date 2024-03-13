@@ -17,19 +17,19 @@ extends Node2D
 const SUCK_EFFECT = preload("res://scenes/effects/suck.tscn")
 const BUILDER = preload("res://scenes/actor/builder.tscn")
 const ENEMY = preload("res://scenes/actor/enemy.tscn")
-
-var tilesize = 16
-var astar_grid = AStarGrid2D.new()
-var astar_grid_2 = AStarGrid2D.new()
-
-var magenta: Color = "#f92672"
-var blue: Color = "#66d9ef"
+const magenta: Color = "#f92672"
+const blue: Color = "#66d9ef"
 
 enum {
 	MOVING,
 	ACTION,
 	SUCK
 }
+
+var tilesize = 16
+var astar_grid = AStarGrid2D.new()
+var astar_grid_2 = AStarGrid2D.new()
+
 var gamestate = MOVING
 var turn_taken = false
 var num_turns = -1
@@ -41,6 +41,7 @@ var enemies_to_spawn = 0
 var turns_till_enemy_spawn = 0
 
 var paused = false
+var game_data = GameData.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -55,6 +56,8 @@ func _ready() -> void:
 	for lighthouse in get_tree().get_nodes_in_group("lighthouses"):
 		lighthouse.died.connect(_on_actor_died)
 	hero.died.connect(_on_actor_died)
+	if ResourceLoader.exists("user://high_scores_file.tres"):
+		game_data = ResourceLoader.load("user://high_scores_file.tres")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -112,11 +115,12 @@ func _process(delta: float) -> void:
 				if not try_attack(enemy, vector):
 					try_move(enemy, vector)
 		for enemy: Actor in get_tree().get_nodes_in_group("enemies"):
-			if enemy.position.distance_to(hero.position) < enemy.target_radius * tilesize:
-				if enemy.position.distance_to(hero.position) < enemy.position.distance_to(lighthouse.position):
-					enemy.target = tile_map.local_to_map(hero.position)
-			else:
-				enemy.target = tile_map.local_to_map(lighthouse.position)
+			if lighthouse:
+				if enemy.position.distance_to(hero.position) < enemy.target_radius * tilesize:
+					if enemy.position.distance_to(hero.position) < enemy.position.distance_to(lighthouse.position):
+						enemy.target = tile_map.local_to_map(hero.position)
+				else:
+					enemy.target = tile_map.local_to_map(lighthouse.position)
 		turn_taken = false
 		
 func try_move(actor: Actor, vector: Vector2) -> bool:
@@ -130,6 +134,8 @@ func try_move(actor: Actor, vector: Vector2) -> bool:
 	if not destincation_cell_background_data: #no ground
 		return false
 	actor.move(vector)
+	if actor == hero:
+		SoundPlayer.play_sound(SoundPlayer.FOOTSTEP_GRASS_002)
 	return true
 	
 func border_gradient_alpha(alpha: float) -> void:
@@ -175,6 +181,7 @@ func try_build(actor: Actor, vector: Vector2) -> bool:
 				return false #actor on spot
 	var success = tile_map.try_build_wall(coords)
 	if success:
+		SoundPlayer.play_sound(SoundPlayer.IMPACT_SOFT_HEAVY_003)
 		#actor.bump_anim(vector)
 		astar_grid.set_point_weight_scale(coords, 8.0)
 		astar_grid_2.set_point_solid(coords, not tile_map.is_coord_walkable(coords))
@@ -189,6 +196,7 @@ func try_attack(actor: Actor, vector: Vector2) -> bool:
 			if act_coords == coords:
 				act.damage(1)
 				actor.bump_anim(vector)
+				SoundPlayer.play_sound(SoundPlayer.IMPACT_PLANK_MEDIUM_004)
 				return true
 	var success = tile_map.try_attack_wall(coords)
 	if success:
@@ -231,6 +239,7 @@ func hero_moving():
 			border_gradient_color(magenta)
 			move_control_alpha(0.0)
 			action_control_alpha(1.0)
+			SoundPlayer.play_sound(SoundPlayer.SWITCH_8)
 		if Input.is_action_just_pressed("suck"):
 			gamestate = SUCK
 			border_gradient_alpha(1.0)
@@ -238,6 +247,7 @@ func hero_moving():
 			move_control_alpha(0.0)
 			suck_control_alpha(1.0)
 			action_control_alpha(0.5)
+			SoundPlayer.play_sound(SoundPlayer.SWITCH_8)
 		if turn_taken:
 			num_turns += 1
 	if Input.is_action_just_pressed("escape"):
@@ -282,6 +292,7 @@ func hero_action():
 		border_gradient_alpha(0.0)
 		move_control_alpha(1.0)
 		action_control_alpha(0.0)
+		SoundPlayer.play_sound(SoundPlayer.SWITCH_11)
 	if turn_taken:
 		num_turns += 1
 		
@@ -321,6 +332,7 @@ func hero_suck():
 		move_control_alpha(1.0)
 		suck_control_alpha(0.0)
 		action_control_alpha(0.0)
+		SoundPlayer.play_sound(SoundPlayer.SWITCH_11)
 	if turn_taken:
 		num_turns += 1
 		
@@ -349,6 +361,7 @@ func suck(actor: Actor, action_slot: String, vector: Vector2) -> bool:
 				elif vector == Vector2(-1, 0):
 					suck_effect.rotation_degrees = 270
 				add_child(suck_effect)
+				SoundPlayer.play_sound(SoundPlayer.SUCK)
 				if act is Builder:
 					actor.health += 1
 				act.die()
@@ -361,6 +374,8 @@ func _on_actor_died(actor: Actor) -> void:
 		pause_and_game_over.show()
 		game_over_label.show()
 		resume_button.hide()
+		game_data.high_scores.append(num_turns)
+		ResourceSaver.save(game_data, "user://high_scores_file.tres")
 	actor.queue_free()
 	
 func try_spawn_builder() -> void:
