@@ -281,6 +281,7 @@ func try_teleport(actor: Actor, vector: Vector2) -> bool:
 			effect2.position -= (vector * tilesize * 2)
 			add_child(effect2)
 			actor.animated_sprite_2d.position += vector * tilesize * 2
+			SoundPlayer.play_sound(SoundPlayer.LASER_1)
 			return success
 	return false
 	
