@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://b2wnm5utyslc1"]
+
+[ext_resource type="PackedScene" uid="uid://bulfw21jdou0q" path="res://scenes/effects/suck.tscn" id="1_pw3gr"]
+[ext_resource type="Script" path="res://scenes/effects/teleport_effect.gd" id="2_vmlrc"]
+[ext_resource type="Texture2D" uid="uid://d0hobivjgsatg" path="res://assets/sprites/shapes_trans.png" id="3_fjxex"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_j1taf"]
+atlas = ExtResource("3_fjxex")
+region = Rect2(0, 48, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rjhp5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_j1taf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 4.0
+}]
+
+[node name="TeleportEffect" instance=ExtResource("1_pw3gr")]
+z_index = 10
+z_as_relative = false
+script = ExtResource("2_vmlrc")
+
+[node name="AnimatedSprite2D" parent="." index="0"]
+modulate = Color(0.682353, 0.505882, 1, 1)
+sprite_frames = SubResource("SpriteFrames_rjhp5")
+frame_progress = 0.0

@@ -385,6 +385,12 @@ script = ExtResource("5_6mopx")
 [node name="Hero" parent="." instance=ExtResource("5_g5gmo")]
 z_index = 10
 position = Vector2(248, 168)
+action = {
+"down": "NONE",
+"left": "NONE",
+"right": "ATTACK",
+"up": "NONE"
+}
 
 [node name="BuilderSpawners" type="Node" parent="."]
 

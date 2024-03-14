@@ -9,6 +9,7 @@ func _ready() -> void:
 	if ResourceLoader.exists("user://high_scores_file.tres"):
 		game_data = ResourceLoader.load("user://high_scores_file.tres")
 	update_high_scores_label()
+	$VBoxContainer/HBoxContainer/StartButton.grab_focus()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

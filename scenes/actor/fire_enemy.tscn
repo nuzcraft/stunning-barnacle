@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnhfeyv2ilw6f"]
+
+[ext_resource type="PackedScene" uid="uid://5hktlxx467jw" path="res://scenes/actor/enemy.tscn" id="1_br3ht"]
+[ext_resource type="Script" path="res://scenes/actor/fire_enemy.gd" id="2_nigpg"]
+
+[node name="FireEnemy" groups=["fire_enemies"] instance=ExtResource("1_br3ht")]
+modulate = Color(0.976471, 0.14902, 0.447059, 1)
+script = ExtResource("2_nigpg")
+health = 4
+target_radius = 7
+action = {
+"down": "FIREBALL",
+"left": "FIREBALL",
+"right": "FIREBALL",
+"up": "FIREBALL"
+}
+suck_action = "FIREBALL"

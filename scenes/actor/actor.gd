@@ -16,6 +16,7 @@ signal died
 
 var tilesize = 16
 var target: Vector2i = Vector2i.ZERO
+var wait_turns = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -32,7 +33,7 @@ func move(vector: Vector2) -> void:
 	if vector.x > 0:
 		animated_sprite_2d.flip_h = false
 	elif vector.x < 0:
-		animated_sprite_2d.flip_h = true 
+		animated_sprite_2d.flip_h = true 	
 	
 func bump_anim(vector: Vector2) -> void:
 	animated_sprite_2d.position += (vector * tilesize) * 0.75
