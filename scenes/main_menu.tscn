@@ -1,6 +1,31 @@
-[gd_scene load_steps=2 format=3 uid="uid://dkrp3mof0u7a2"]
+[gd_scene load_steps=4 format=3 uid="uid://dkrp3mof0u7a2"]
 
 [ext_resource type="Script" path="res://scenes/main_menu.gd" id="1_7kpsf"]
+[ext_resource type="Shader" path="res://scenes/scanline.gdshader" id="2_b4bbs"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_e7n2o"]
+shader = ExtResource("2_b4bbs")
+shader_parameter/overlay = true
+shader_parameter/scanlines_opacity = 0.1
+shader_parameter/scanlines_width = 0.25
+shader_parameter/grille_opacity = 0.05
+shader_parameter/resolution = Vector2(640, 480)
+shader_parameter/pixelate = false
+shader_parameter/roll = false
+shader_parameter/roll_speed = 8.0
+shader_parameter/roll_size = 15.0
+shader_parameter/roll_variation = 1.8
+shader_parameter/distort_intensity = 0.0
+shader_parameter/noise_opacity = 0.0
+shader_parameter/noise_speed = 5.0
+shader_parameter/static_noise_intensity = 0.06
+shader_parameter/aberration = 0.00500005
+shader_parameter/brightness = 1.4
+shader_parameter/discolor = false
+shader_parameter/warp_amount = 0.1
+shader_parameter/clip_warp = false
+shader_parameter/vignette_intensity = 0.4
+shader_parameter/vignette_opacity = 0.5
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -101,6 +126,17 @@ text = "[p align=center]high scores
 #10: 3
 [/p]"
 fit_content = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_e7n2o")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
 
 [connection signal="mouse_entered" from="VBoxContainer/HBoxContainer/StartButton" to="." method="_on_start_button_mouse_entered"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/StartButton" to="." method="_on_start_button_pressed"]

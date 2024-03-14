@@ -62,6 +62,7 @@ func _ready() -> void:
 	hero.died.connect(_on_actor_died)
 	if ResourceLoader.exists("user://high_scores_file.tres"):
 		game_data = ResourceLoader.load("user://high_scores_file.tres")
+	Dialogic.start('tutorial')
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
