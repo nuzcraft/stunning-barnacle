@@ -387,7 +387,7 @@ z_index = 10
 position = Vector2(248, 168)
 action = {
 "down": "NONE",
-"left": "NONE",
+"left": "TELEPORT",
 "right": "FIREBALL",
 "up": "NONE"
 }

@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddd3nppgdhphp"]
+
+[ext_resource type="PackedScene" uid="uid://5hktlxx467jw" path="res://scenes/actor/enemy.tscn" id="1_ie8pm"]
+[ext_resource type="Script" path="res://scenes/actor/teleport_enemy.gd" id="2_4yfff"]
+
+[node name="TeleportEnemy" groups=["teleport_enemies"] instance=ExtResource("1_ie8pm")]
+modulate = Color(0.682353, 0.505882, 1, 1)
+script = ExtResource("2_4yfff")
+health = 4
+target_radius = 10
+action = {
+"down": "TELEPORT",
+"left": "TELEPORT",
+"right": "TELEPORT",
+"up": "TELEPORT"
+}
+suck_action = "TELEPORT"

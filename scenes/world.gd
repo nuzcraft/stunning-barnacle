@@ -15,9 +15,12 @@ extends Node2D
 @onready var game_over_label: Label = $PauseAndGameOver/VBoxContainer/GameOverLabel
 
 const SUCK_EFFECT = preload("res://scenes/effects/suck.tscn")
+const FIRE = preload("res://scenes/effects/fire.tscn")
+const TELEPORT_EFFECT = preload("res://scenes/effects/teleport_effect.tscn")
 const BUILDER = preload("res://scenes/actor/builder.tscn")
 const ENEMY = preload("res://scenes/actor/enemy.tscn")
 const FIRE_ENEMY = preload("res://scenes/actor/fire_enemy.tscn")
+const TELEPORT_ENEMY = preload("res://scenes/actor/teleport_enemy.tscn")
 const magenta: Color = "#f92672"
 const blue: Color = "#66d9ef"
 
@@ -116,6 +119,18 @@ func _process(delta: float) -> void:
 				if enemy.is_in_group("fire_enemies"):
 					if not try_fireball(enemy, vector):
 						try_move(enemy, vector)
+				elif enemy.is_in_group("teleport_enemies"):
+					if path.size() == 2 or enemy.wait_turns > 0:
+						if not try_attack(enemy, vector):
+							try_move(enemy, vector)
+						enemy.wait_turns -= 1
+					else:
+						var teleported = try_teleport(enemy, vector)
+						if not teleported:
+							if not try_attack(enemy, vector):
+								try_move(enemy, vector)
+						else:
+							enemy.wait_turns = 1
 				elif not try_attack(enemy, vector):
 					try_move(enemy, vector)
 		for enemy: Actor in get_tree().get_nodes_in_group("enemies"):
@@ -219,20 +234,55 @@ func try_fireball(actor: Actor, vector: Vector2) -> bool:
 			var act_coords = tile_map.local_to_map(act.position)
 			if act_coords == coords or act_coords == coords2:
 				act.damage(1)
-				#actor.bump_anim(vector) # TODO: FIRE SPRITE
+				var fire1 = FIRE.instantiate()
+				fire1.position = destination
+				add_child(fire1)
+				var fire2 = FIRE.instantiate()
+				fire2.position = destination2
+				add_child(fire2)
 				SoundPlayer.play_sound(SoundPlayer.IMPACT_PLANK_MEDIUM_004) #TODO FIRE SOUND
 				return true
 	var success = tile_map.try_attack_wall(coords)
 	var success2 = tile_map.try_attack_wall(coords2)
 	if success:
-		#actor.bump_anim(vector)
 		astar_grid.set_point_weight_scale(coords, 1.0)
 		astar_grid_2.set_point_solid(coords, not tile_map.is_coord_walkable(coords))
 	if success2:
-		#actor.bump_anim(vector)
 		astar_grid.set_point_weight_scale(coords2, 1.0)
 		astar_grid_2.set_point_solid(coords2, not tile_map.is_coord_walkable(coords))
+	if success or success2:
+		var fire1 = FIRE.instantiate()
+		fire1.position = destination
+		add_child(fire1)
+		var fire2 = FIRE.instantiate()
+		fire2.position = destination2
+		add_child(fire2)
 	return success
+	
+func try_teleport(actor: Actor, vector: Vector2) -> bool:
+	#var destination = actor.position + (vector * tilesize)
+	var destination2 = actor.position + (vector * tilesize * 2)
+	#var coords = tile_map.local_to_map(destination)
+	var coords2 = tile_map.local_to_map(destination2)
+	for act: Actor in get_tree().get_nodes_in_group("actors"):
+		if actor != act:
+			var act_coords = tile_map.local_to_map(act.position)
+			if act_coords == coords2:
+				return false
+	if tile_map.is_coord_walkable(coords2):
+		# add effect
+		var success = try_move(actor, vector * 2)
+		if success:
+			var effect1 = TELEPORT_EFFECT.instantiate()
+			effect1.position = actor.position
+			add_child(effect1)
+			var effect2 = TELEPORT_EFFECT.instantiate()
+			effect2.position = actor.position
+			effect2.position -= (vector * tilesize * 2)
+			add_child(effect2)
+			actor.animated_sprite_2d.position += vector * tilesize * 2
+			return success
+	return false
 	
 func prep_astar_grids() -> void:
 	astar_grid.region = Rect2i(0, 0, 36, 20)
@@ -372,6 +422,10 @@ func take_action(actor: Actor, action: String, vector: Vector2) -> bool:
 		return try_build(actor, vector)
 	elif action == "FIREBALL":
 		return try_fireball(actor, vector)
+	elif action == "TELEPORT":
+		return try_teleport(actor, vector)
+	elif action == "BOMB":
+		return try_fireball(actor, vector)
 	return false
 	
 func suck(actor: Actor, action_slot: String, vector: Vector2) -> bool:
@@ -425,7 +479,25 @@ func try_spawn_enemy() -> void:
 	for actor in get_tree().get_nodes_in_group("actors"):
 		if actor.position == spawner.position:
 			return
-	var enemy = FIRE_ENEMY.instantiate()
+	var enemy_array = [ENEMY, ENEMY, ENEMY, ENEMY]
+	if num_turns > 50:
+		enemy_array.append(FIRE_ENEMY)
+	if num_turns > 100:
+		enemy_array.append(TELEPORT_ENEMY)
+	if num_turns > 150:
+		enemy_array.append(FIRE_ENEMY)
+		enemy_array.append(TELEPORT_ENEMY)
+	if num_turns > 200:
+		enemy_array.append(FIRE_ENEMY)
+		enemy_array.append(TELEPORT_ENEMY)
+	if num_turns > 250:
+		enemy_array.append(FIRE_ENEMY)
+		enemy_array.append(TELEPORT_ENEMY)
+	if num_turns > 300:
+		enemy_array.append(FIRE_ENEMY)
+		enemy_array.append(TELEPORT_ENEMY)
+	
+	var enemy = enemy_array.pick_random().instantiate()
 	enemy.position = spawner.position
 	add_child(enemy)
 	enemy.died.connect(_on_actor_died)
