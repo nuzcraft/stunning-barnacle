@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://dlb0a6mbwalfl"]
+[gd_scene load_steps=38 format=3 uid="uid://dlb0a6mbwalfl"]
 
 [ext_resource type="Texture2D" uid="uid://cberwt5g1yhv0" path="res://assets/sprites/tiles.png" id="1_5sept"]
 [ext_resource type="Script" path="res://scenes/world.gd" id="1_lv5tp"]
@@ -9,6 +9,9 @@
 [ext_resource type="Texture2D" uid="uid://dvwuhqnsfxwp6" path="res://assets/sprites/2d_lights_and_shadows_neutral_point_light.webp" id="9_6jos7"]
 [ext_resource type="Shader" path="res://scenes/scanline.gdshader" id="9_eici8"]
 [ext_resource type="PackedScene" uid="uid://cki5el3yru0v0" path="res://scenes/actor/lighthouse.tscn" id="9_mlw7q"]
+[ext_resource type="PackedScene" uid="uid://dnhfeyv2ilw6f" path="res://scenes/actor/fire_enemy.tscn" id="10_u8c2a"]
+[ext_resource type="PackedScene" uid="uid://ddd3nppgdhphp" path="res://scenes/actor/teleport_enemy.tscn" id="11_j2wli"]
+[ext_resource type="PackedScene" uid="uid://5hktlxx467jw" path="res://scenes/actor/enemy.tscn" id="12_h6pjv"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_o7evw"]
 polygon = PackedVector2Array(-6, -6, 6, -6, 6, 6, -6, 6)
@@ -691,6 +694,7 @@ text = "Quit"
 layer = 2
 
 [node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+visible = false
 material = SubResource("ShaderMaterial_jqpuu")
 anchors_preset = 15
 anchor_right = 1.0
@@ -715,6 +719,15 @@ libraries = {
 "": SubResource("AnimationLibrary_qrcnb")
 }
 autoplay = "day_night"
+
+[node name="FireEnemy" parent="." instance=ExtResource("10_u8c2a")]
+position = Vector2(88, 200)
+
+[node name="TeleportEnemy" parent="." instance=ExtResource("11_j2wli")]
+position = Vector2(104, 248)
+
+[node name="Enemy" parent="." instance=ExtResource("12_h6pjv")]
+position = Vector2(88, 136)
 
 [connection signal="pressed" from="PauseAndGameOver/VBoxContainer/HBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
 [connection signal="pressed" from="PauseAndGameOver/VBoxContainer/HBoxContainer/RestartButton" to="." method="_on_restart_button_pressed"]
